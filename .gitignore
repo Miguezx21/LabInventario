@@ -1,0 +1,21 @@
+# Maven / compilacion
+target/
+
+# IDEs
+.idea/
+*.iml
+.vscode/
+.classpath
+.project
+.settings/
+
+# Sistema operativo
+.DS_Store
+Thumbs.db
+
+# Configuracion local con credenciales (NO subir a Git)
+src/main/resources/application-local.properties
+
+# Logs
+*.log
+HELP.md

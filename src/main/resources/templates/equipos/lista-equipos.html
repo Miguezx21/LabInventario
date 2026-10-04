@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Inventario - Laboratorio de Ingeniería de Software</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="container py-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h1 class="h3 mb-0">Inventario del Laboratorio de Ingeniería de Software</h1>
+
+        <!-- Usuario con sesión iniciada + cerrar sesión (logout es POST con token CSRF). -->
+        <div class="d-flex align-items-center gap-2">
+            <span class="small text-muted">
+                <span sec:authentication="name">usuario</span>
+                <span class="badge bg-dark" sec:authorize="hasRole('ADMIN')">ADMIN</span>
+                <span class="badge bg-info text-dark" sec:authorize="hasRole('ESTUDIANTE')">ESTUDIANTE</span>
+            </span>
+            <form th:action="@{/logout}" method="post" class="d-inline">
+                <button type="submit" class="btn btn-sm btn-outline-secondary">Cerrar sesión</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- VISTA (V de MVC): esta plantilla solo RENDERIZA lo que el Model le entrega.
+         Ocultar botones según el rol es solo comodidad visual; la seguridad real
+         la aplica el servidor (SecurityConfig) aunque alguien escriba la URL a mano. -->
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <form th:action="@{/equipos}" method="get" class="row g-2">
+            <div class="col-auto">
+                <input type="text" name="nombre" th:value="${nombre}"
+                       class="form-control" placeholder="Buscar por nombre...">
+            </div>
+            <div class="col-auto">
+                <button type="submit" class="btn btn-outline-secondary">Buscar</button>
+            </div>
+        </form>
+        <a th:href="@{/equipos/nuevo}" class="btn btn-primary" sec:authorize="hasRole('ADMIN')">+ Nuevo equipo</a>
+    </div>
+
+    <table class="table table-striped table-hover align-middle">
+        <thead class="table-dark">
+        <tr>
+            <th>Código</th>
+            <th>Nombre</th>
+            <th>Categoría</th>
+            <th>Estado</th>
+            <th>Cantidad</th>
+            <th>Ubicación</th>
+            <th class="text-end" sec:authorize="hasRole('ADMIN')">Acciones</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="equipo : ${equipos}">
+            <td th:text="${equipo.codigoInventario}"></td>
+            <td th:text="${equipo.nombre}"></td>
+            <td th:text="${equipo.categoria}"></td>
+            <td>
+                <span class="badge bg-secondary" th:text="${equipo.estado}"></span>
+            </td>
+            <td th:text="${equipo.cantidad}"></td>
+            <td th:text="${equipo.ubicacion}"></td>
+            <td class="text-end" sec:authorize="hasRole('ADMIN')">
+                <a th:href="@{/equipos/editar/{id}(id=${equipo.id})}"
+                   class="btn btn-sm btn-outline-primary">Editar</a>
+                <!-- Eliminar es un formulario POST (con token CSRF), no un enlace GET. -->
+                <form th:action="@{/equipos/eliminar/{id}(id=${equipo.id})}" method="post" class="d-inline"
+                      onsubmit="return confirm('¿Eliminar este equipo?');">
+                    <button type="submit" class="btn btn-sm btn-outline-danger">Eliminar</button>
+                </form>
+            </td>
+        </tr>
+        <tr th:if="${#lists.isEmpty(equipos)}">
+            <td colspan="7" class="text-center text-muted">No hay equipos registrados.</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>
