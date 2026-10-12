@@ -1,0 +1,6 @@
+target/
+.git/
+.github/
+.vscode/
+src/main/resources/application-local.properties
+*.log
