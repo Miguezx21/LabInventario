@@ -1,7 +1,10 @@
 # LabInventario
 
-### DEMO: 
+### DEMO (Despliegue): 
 https://labinventario.onrender.com
+
+### Video:
+https://www.youtube.com/watch?v=6-6Tk5Ii3ro
 
 Sistema web para gestionar el inventario de equipos de un laboratorio de Ingeniería de Software
 (laptops, monitores, servidores, visores de realidad virtual, licencias y equipo de red).
